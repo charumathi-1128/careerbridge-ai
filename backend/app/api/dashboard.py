@@ -52,7 +52,8 @@ def get_dashboard_summary(db: Session = Depends(get_db)):
         total_steps=total_steps_count,
         completed_steps=completed_steps_count,
         skill_gaps=analyzed_gaps,
-        has_projects=bool(resume and resume.parsed_data.get("projects"))
+        has_projects=bool(resume and resume.parsed_data.get("projects")),
+        target_role=target_role
     )
 
     next_action = get_next_best_action(steps, analyzed_gaps)
@@ -97,6 +98,9 @@ def get_readiness_breakdown(db: Session = Depends(get_db)):
     ) if raw_text else {"overall_score": 60}
 
     gaps = db.query(SkillGap).filter(SkillGap.user_id == 1).all()
+    if not gaps:
+        gaps = analyze_skill_gaps(current_skills, target_role, job_desc)
+
     steps = db.query(RoadmapStep).filter(RoadmapStep.user_id == 1).all()
 
     total_steps_count = len(steps) if steps else 6
@@ -107,7 +111,8 @@ def get_readiness_breakdown(db: Session = Depends(get_db)):
         total_steps=total_steps_count,
         completed_steps=completed_steps_count,
         skill_gaps=gaps,
-        has_projects=bool(resume and resume.parsed_data.get("projects"))
+        has_projects=bool(resume and resume.parsed_data.get("projects")),
+        target_role=target_role
     )
 
     return readiness

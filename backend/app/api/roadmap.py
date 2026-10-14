@@ -37,7 +37,13 @@ def get_skill_gaps(db: Session = Depends(get_db)):
             match_status=g["match_status"],
             priority=g["priority"],
             why_it_matters=g["why_it_matters"],
-            prerequisites=g["prerequisites"]
+            prerequisites=g.get("prerequisites"),
+            learning_topics=g.get("learning_topics", []),
+            certifications=g.get("certifications", []),
+            practice_platforms=g.get("practice_platforms", []),
+            practice_guide=g.get("practice_guide"),
+            skill_outcomes=g.get("skill_outcomes", []),
+            recommended_projects=g.get("recommended_projects", [])
         )
         db.add(gap_obj)
         db_gaps.append(gap_obj)
@@ -50,9 +56,9 @@ def get_skill_gaps(db: Session = Depends(get_db)):
 
 @router.get("/steps", response_model=List[RoadmapStepResponse])
 def get_roadmap_steps(db: Session = Depends(get_db)):
-    # Check if steps already generated in DB with recommended_projects
+    # Check if steps already generated in DB with recommended_projects and practice_platforms
     existing_steps = db.query(RoadmapStep).filter(RoadmapStep.user_id == 1).order_by(RoadmapStep.step_number).all()
-    if existing_steps and existing_steps[0].recommended_projects:
+    if existing_steps and existing_steps[0].recommended_projects and existing_steps[0].practice_platforms:
         return existing_steps
 
     # Otherwise clear old format steps and generate fresh steps
@@ -65,7 +71,7 @@ def get_roadmap_steps(db: Session = Depends(get_db)):
     job_desc = target.job_description if target else None
 
     gaps = analyze_skill_gaps(current_skills, target_role, job_desc)
-    steps_data = generate_roadmap_for_gaps(gaps)
+    steps_data = generate_roadmap_for_gaps(gaps, target_role)
 
     db_steps = []
     for s in steps_data:
@@ -76,9 +82,12 @@ def get_roadmap_steps(db: Session = Depends(get_db)):
             skill_name=s["skill_name"],
             duration=s["duration"],
             status=s["status"],
+            phase_goal=s.get("phase_goal"),
+            prerequisites=s.get("prerequisites"),
             learning_sequence=s.get("learning_sequence", []),
             learning_topics=s.get("learning_topics", []),
             certifications=s.get("certifications", []),
+            practice_platforms=s.get("practice_platforms", []),
             skill_outcomes=s.get("skill_outcomes", []),
             recommended_projects=s.get("recommended_projects", []),
             practice_guide=s.get("practice_guide"),

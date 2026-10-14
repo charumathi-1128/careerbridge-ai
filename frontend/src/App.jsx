@@ -13,7 +13,7 @@ import { ResumeUploadPage } from './pages/ResumeUploadPage';
 import { ResumeAnalysisPage } from './pages/ResumeAnalysisPage';
 import { CareerTargetPage } from './pages/CareerTargetPage';
 import { SkillGapPage } from './pages/SkillGapPage';
-import { LearningRoadmapPage } from './pages/LearningRoadmapPage';
+
 import { SkillDetailPage } from './pages/SkillDetailPage';
 import { CareerReadinessPage } from './pages/CareerReadinessPage';
 import { CareerOptionsPage } from './pages/CareerOptionsPage';
@@ -42,7 +42,7 @@ function App() {
             <Route path="/career/target" element={<CareerTargetPage />} />
             <Route path="/skills/gaps" element={<SkillGapPage />} />
             <Route path="/skills/:skillId" element={<SkillDetailPage />} />
-            <Route path="/roadmap" element={<LearningRoadmapPage />} />
+
             <Route path="/career-readiness" element={<CareerReadinessPage />} />
             <Route path="/career/options" element={<CareerOptionsPage />} />
             <Route path="/career/compare" element={<CareerComparePage />} />

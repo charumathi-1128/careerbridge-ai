@@ -9,6 +9,12 @@ class SkillGapResponse(BaseModel):
     priority: str
     why_it_matters: str
     prerequisites: Optional[str] = None
+    learning_topics: Optional[List[str]] = []
+    certifications: Optional[List[str]] = []
+    practice_platforms: Optional[List[Dict[str, str]]] = []
+    practice_guide: Optional[str] = None
+    skill_outcomes: Optional[List[str]] = []
+    recommended_projects: Optional[List[Dict[str, Any]]] = []
 
     class Config:
         from_attributes = True
@@ -20,9 +26,12 @@ class RoadmapStepResponse(BaseModel):
     skill_name: str
     duration: str
     status: str
+    phase_goal: Optional[str] = None
+    prerequisites: Optional[str] = None
     learning_sequence: Optional[List[str]] = []
     learning_topics: Optional[List[str]] = []
     certifications: Optional[List[str]] = []
+    practice_platforms: Optional[List[Dict[str, str]]] = []
     skill_outcomes: Optional[List[str]] = []
     recommended_projects: Optional[List[Dict[str, Any]]] = []
     practice_guide: Optional[str] = None

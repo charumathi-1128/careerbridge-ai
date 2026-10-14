@@ -6,7 +6,6 @@ import {
   ScanText,
   Target,
   GitCompare,
-  Milestone,
   Compass,
   FileCheck2,
   CheckCircle2,
@@ -18,7 +17,7 @@ const navigationItems = [
   { name: 'Resume Analysis', path: '/resume/analysis', icon: ScanText },
   { name: 'Target Career', path: '/career/target', icon: Target },
   { name: 'Skill Gap Analysis', path: '/skills/gaps', icon: GitCompare },
-  { name: 'Learning Roadmap', path: '/roadmap', icon: Milestone },
+
   { name: 'Career Readiness', path: '/career-readiness', icon: CheckCircle2 },
   { name: 'Career Options', path: '/career/options', icon: Compass },
 ];

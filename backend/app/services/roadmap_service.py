@@ -486,95 +486,191 @@ def generate_roadmap_for_gaps(skill_gaps: List[Dict[str, Any]]) -> List[Dict[str
     step_counter = 1
     
     # Prioritize: HIGH -> MEDIUM -> LOW
+    
+def get_platforms_for_skill(skill_name: str) -> List[Dict[str, str]]:
+    name = skill_name.lower()
+    if any(k in name for k in ["algorithm", "data structure", "dsa", "leetcode", "problem solving"]):
+        return [
+            {"name": "LeetCode", "type": "Interactive Problem Solving", "focus": "Topic-wise DSA Grind & Blind 75 / NeetCode 150"},
+            {"name": "HackerRank", "type": "Coding Assessments", "focus": "Problem Solving certification & verified skill badges"},
+            {"name": "Coursera (Stanford/Princeton)", "type": "Structured Courses", "focus": "Deep mathematical proofs and algorithmic analysis"}
+        ]
+    elif any(k in name for k in ["sql", "database", "rdbms", "postgres", "mysql", "mongodb"]):
+        return [
+            {"name": "LeetCode SQL 50", "type": "Query Drills", "focus": "Top 50 enterprise SQL queries, window functions & joins"},
+            {"name": "StrataScratch / Mode Analytics", "type": "Real-World Business SQL", "focus": "Actual interview questions from FAANG & top tech companies"},
+            {"name": "PostgreSQL Official Tutorial", "type": "Documentation & Labs", "focus": "Schema indexing, EXPLAIN ANALYZE & transaction locks"}
+        ]
+    elif any(k in name for k in ["react", "vue", "frontend", "html", "css", "javascript", "typescript", "angular"]):
+        return [
+            {"name": "freeCodeCamp", "type": "Interactive Curriculum", "focus": "Responsive Web Design & Full JavaScript algorithms"},
+            {"name": "Frontend Masters / MDN Web Docs", "type": "In-Depth Engineering", "focus": "Deep DOM architecture, hooks, state machines & web performance"},
+            {"name": "Scrimba / Frontend Mentor", "type": "Hands-On UI Building", "focus": "Pixel-perfect component challenges with real design specs"}
+        ]
+    elif any(k in name for k in ["python", "pandas", "numpy", "data analysis", "data science", "machine learning", "ai", "deep learning"]):
+        return [
+            {"name": "Kaggle Learn & Competitions", "type": "Hands-On Practice", "focus": "Interactive notebooks with real-world industry datasets"},
+            {"name": "Coursera (DeepLearning.AI / Andrew Ng)", "type": "Specialization Courses", "focus": "Machine Learning & Data Science Specializations"},
+            {"name": "DataCamp / fast.ai", "type": "Guided Code Labs", "focus": "Practical model training, EDA & feature engineering"}
+        ]
+    elif any(k in name for k in ["cloud", "aws", "azure", "gcp", "docker", "kubernetes", "devops", "ci/cd"]):
+        return [
+            {"name": "AWS Skill Builder / Cloud Academy", "type": "Official Labs", "focus": "Cloud Practitioner and Solutions Architect labs"},
+            {"name": "KodeKloud", "type": "Interactive Sandboxes", "focus": "Hands-on Docker, Kubernetes & CI/CD pipeline sandboxes"},
+            {"name": "freeCodeCamp DevOps", "type": "Comprehensive Guides", "focus": "Production deployment, microservices & container security"}
+        ]
+    elif any(k in name for k in ["api", "fastapi", "django", "node", "express", "backend", "spring", "rest"]):
+        return [
+            {"name": "Postman Student Expert", "type": "API Testing & Docs", "focus": "RESTful endpoints design, auth tokens & automated testing"},
+            {"name": "FullStackOpen (Univ of Helsinki)", "type": "Fullstack Curriculum", "focus": "Modern backend architectures, databases, and testing"},
+            {"name": "Coursera / Udemy", "type": "Specialized Backend", "focus": "Production microservices, caching with Redis & auth flows"}
+        ]
+    else:
+        return [
+            {"name": "Coursera / edX", "type": "Accredited Courses", "focus": "Structured academic & industry curriculum with verified certificates"},
+            {"name": "freeCodeCamp & Official Docs", "type": "Hands-On Tutorials", "focus": "Open-source guides, practical examples & interactive exercises"},
+            {"name": "GitHub & Sandbox Drills", "type": "Open Source Practice", "focus": "Building reusable repos and code reviews with industry mentors"}
+        ]
+
+def get_skill_curriculum(skill_name: str, target_role: str = "") -> Dict[str, Any]:
+    # Look for exact or partial template match
+    template = None
+    for key, val in SKILL_ROADMAP_TEMPLATES.items():
+        if key.lower() in skill_name.lower() or skill_name.lower() in key.lower():
+            template = val
+            break
+
+    if not template:
+        clean_name = skill_name.strip()
+        template = {
+            "title": f"Master {clean_name} Fundamentals & Application",
+            "duration": "2-3 weeks (30-35 hours)",
+            "learning_topics": [
+                f"1. Core concepts, foundational principles & syntax of {clean_name}",
+                f"2. Setting up dev environment & industry tooling for {clean_name}",
+                f"3. Practical problem solving, hands-on modules & design patterns in {clean_name}",
+                f"4. Real-world implementation, performance tuning & portfolio integration"
+            ],
+            "certifications": [
+                f"Industry Accredited Certification in {clean_name}",
+                f"Professional Domain Specialization Certificate for {clean_name}"
+            ],
+            "skill_outcomes": [
+                f"Practical working competency in {clean_name} for industry projects",
+                f"Ability to solve real-world problems and build production modules using {clean_name}"
+            ],
+            "practice": f"Complete hands-on tutorials, official documentation labs, and practical drills for {clean_name}.",
+            "recommended_projects": [
+                {
+                    "title": f"{clean_name} Industry Application Project",
+                    "description": f"Design and implement a functional, modular project applying {clean_name} to solve a real-world problem.",
+                    "difficulty": "Intermediate",
+                    "technologies": [clean_name, "Industry Best Practices"]
+                },
+                {
+                    "title": f"Production-Grade Scalable Service using {clean_name}",
+                    "description": f"Architect a robust, end-to-end service or system leveraging advanced capabilities of {clean_name}.",
+                    "difficulty": "Advanced",
+                    "technologies": [clean_name, "Architecture", "Testing"]
+                },
+                {
+                    "title": f"{clean_name} Starter Tool & Utility",
+                    "description": f"Build a fundamental script, CLI utility, or prototype exploring core capabilities of {clean_name}.",
+                    "difficulty": "Beginner",
+                    "technologies": [clean_name]
+                }
+            ],
+            "project_title": f"{clean_name} Industry Application Project",
+            "project_description": f"Design and implement a functional project applying {clean_name} to solve a real-world problem.",
+            "completion_criteria": f"Build a tested, documented repository showcasing your practical implementation of {clean_name}."
+        }
+
+    platforms = get_platforms_for_skill(skill_name)
+    topics = template.get("learning_topics", template.get("steps", []))
+    projects = template.get("recommended_projects", [
+        {
+            "title": template.get("project_title", f"{skill_name} Project"),
+            "description": template.get("project_description", f"Build a project applying {skill_name}."),
+            "difficulty": "Intermediate",
+            "technologies": [skill_name]
+        }
+    ])
+
+    return {
+        "title": template.get("title", f"Master {skill_name}"),
+        "duration": template.get("duration", "2-3 weeks"),
+        "phase_goal": template.get("phase_goal", f"Attain end-to-end proficiency and practical application mastery in {skill_name}."),
+        "learning_topics": topics,
+        "certifications": template.get("certifications", []),
+        "practice_platforms": platforms,
+        "practice_guide": template.get("practice", f"Complete hands-on drills and practice exercises for {skill_name}."),
+        "skill_outcomes": template.get("skill_outcomes", []),
+        "recommended_projects": projects,
+        "project_title": template.get("project_title", f"{skill_name} Portfolio Project"),
+        "project_description": template.get("project_description", f"Build a portfolio project demonstrating {skill_name}."),
+        "completion_criteria": template.get("completion_criteria", f"Complete all core learning modules and build a working {skill_name} project.")
+    }
+
+def generate_roadmap_for_gaps(skill_gaps: List[Dict[str, Any]], target_role: str = "Software Developer") -> List[Dict[str, Any]]:
+    """
+    Generates a clear sequential, phase-by-phase learning roadmap ("What to Start First").
+    Guarantees that roadmap steps are never empty.
+    """
+    if not skill_gaps:
+        from app.services.skill_gap_service import analyze_skill_gaps
+        skill_gaps = analyze_skill_gaps([], target_role)
+
+    # Sort priority order: HIGH first, then MEDIUM, then LOW
     sorted_gaps = sorted(
         skill_gaps,
-        key=lambda g: 0 if g["priority"] == "HIGH" else (1 if g["priority"] == "MEDIUM" else 2)
+        key=lambda g: (
+            0 if g.get("priority") == "HIGH" else (1 if g.get("priority") == "MEDIUM" else 2),
+            0 if g.get("match_status") == "MISSING" else (1 if g.get("match_status") == "PARTIAL_MATCH" else 2)
+        )
     )
+
+    steps = []
+    step_counter = 1
+
+    phase_prefixes = [
+        "Phase 1 (Foundations & Core Prereqs)",
+        "Phase 2 (Core Specialization & Frameworks)",
+        "Phase 3 (Applied System Architecture)",
+        "Phase 4 (Cloud, DevOps & Production Integration)",
+        "Phase 5 (Performance Tuning & Advanced Capstone)",
+        "Phase 6 (Interview Mastery & Mock Assessments)"
+    ]
 
     for gap in sorted_gaps:
         skill_name = gap["skill_name"]
-        
-        # Look for exact or partial template match
-        template = None
-        for key, val in SKILL_ROADMAP_TEMPLATES.items():
-            if key.lower() in skill_name.lower() or skill_name.lower() in key.lower():
-                template = val
-                break
+        curriculum = get_skill_curriculum(skill_name, target_role)
 
-        if not template:
-            clean_name = skill_name.strip()
-            template = {
-                "title": f"Master {clean_name} Fundamentals & Application",
-                "duration": "2-3 weeks",
-                "learning_topics": [
-                    f"1. Core concepts, architectural principles & syntax of {clean_name}",
-                    f"2. Setting up dev environment & industry tooling for {clean_name}",
-                    f"3. Practical problem solving, hands-on modules & design patterns in {clean_name}",
-                    f"4. Real-world implementation, performance tuning & portfolio integration"
-                ],
-                "certifications": [
-                    f"Industry Accredited Certification in {clean_name}",
-                    f"Professional Domain Specialization Certificate for {clean_name}"
-                ],
-                "skill_outcomes": [
-                    f"Practical working competency in {clean_name} for industry projects",
-                    f"Ability to solve real-world problems and build production modules using {clean_name}"
-                ],
-                "practice": f"Complete hands-on tutorials, official documentation labs, and practical drills for {clean_name}.",
-                "recommended_projects": [
-                    {
-                        "title": f"{clean_name} Industry Application Project",
-                        "description": f"Design and implement a functional, modular project applying {clean_name} to solve a real-world problem.",
-                        "difficulty": "Intermediate",
-                        "technologies": [clean_name, "Industry Best Practices"]
-                    },
-                    {
-                        "title": f"Production-Grade Scalable Service using {clean_name}",
-                        "description": f"Architect a robust, end-to-end service or system leveraging advanced capabilities of {clean_name}.",
-                        "difficulty": "Advanced",
-                        "technologies": [clean_name, "Architecture", "Testing"]
-                    },
-                    {
-                        "title": f"{clean_name} Starter Tool & Utility",
-                        "description": f"Build a fundamental script, CLI utility, or prototype exploring core capabilities of {clean_name}.",
-                        "difficulty": "Beginner",
-                        "technologies": [clean_name]
-                    }
-                ],
-                "project_title": f"{clean_name} Industry Application Project",
-                "project_description": f"Design and implement a functional project applying {clean_name} to solve a real-world problem.",
-                "completion_criteria": f"Build a tested, documented repository showcasing your practical implementation of {clean_name}."
-            }
+        phase_prefix = phase_prefixes[step_counter - 1] if step_counter - 1 < len(phase_prefixes) else f"Phase {step_counter}"
+        step_title = f"{phase_prefix}: {curriculum['title']}"
 
         # Initial status
-        init_status = "COMPLETED" if gap["match_status"] == "STRONG_MATCH" else "NOT_STARTED"
-
-        learning_topics = template.get("learning_topics", template.get("steps", []))
-        rec_projects = template.get("recommended_projects", [
-            {
-                "title": template.get("project_title", f"{skill_name} Project"),
-                "description": template.get("project_description", f"Build a project applying {skill_name}."),
-                "difficulty": "Intermediate",
-                "technologies": [skill_name]
-            }
-        ])
+        init_status = "COMPLETED" if gap.get("match_status") == "STRONG_MATCH" else "NOT_STARTED"
 
         steps.append({
             "step_number": step_counter,
-            "title": template["title"],
+            "title": step_title,
             "skill_name": skill_name,
-            "duration": template["duration"],
+            "duration": curriculum["duration"],
             "status": init_status,
-            "learning_sequence": learning_topics,
-            "learning_topics": learning_topics,
-            "certifications": template.get("certifications", []),
-            "skill_outcomes": template.get("skill_outcomes", []),
-            "recommended_projects": rec_projects,
-            "practice_guide": template["practice"],
-            "project_title": template["project_title"],
-            "project_description": template["project_description"],
-            "completion_criteria": template["completion_criteria"]
+            "phase_goal": curriculum["phase_goal"],
+            "prerequisites": gap.get("prerequisites", "Basic computer science foundations"),
+            "learning_sequence": curriculum["learning_topics"],
+            "learning_topics": curriculum["learning_topics"],
+            "certifications": curriculum["certifications"],
+            "practice_platforms": curriculum["practice_platforms"],
+            "skill_outcomes": curriculum["skill_outcomes"],
+            "recommended_projects": curriculum["recommended_projects"],
+            "practice_guide": curriculum["practice_guide"],
+            "project_title": curriculum["project_title"],
+            "project_description": curriculum["project_description"],
+            "completion_criteria": curriculum["completion_criteria"]
         })
         step_counter += 1
 
     return steps
+

@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../components/common/Card';
-import { PriorityBadge, StatusBadge } from '../components/common/Badge';
+import { PriorityBadge } from '../components/common/Badge';
 import api from '../services/api';
 import { 
   Sparkles, 
-  ArrowRight, 
   FileText, 
   Target, 
   TrendingUp, 
-  AlertCircle,
-  Clock,
-  Compass,
-  CheckCircle2
+  AlertCircle
 } from 'lucide-react';
 
 export const DashboardPage = () => {
@@ -49,11 +45,7 @@ export const DashboardPage = () => {
     readiness_percentage = 58,
     missing_skills_count = 3,
     high_priority_count = 2,
-    completed_steps_count = 0,
-    total_steps_count = 6,
-    next_best_action = {},
-    high_priority_gaps = [],
-    recent_roadmap_steps = []
+    high_priority_gaps = []
   } = data || {};
 
   return (
@@ -134,103 +126,29 @@ export const DashboardPage = () => {
           </p>
         </Card>
 
-        <Card className="p-5">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase">Roadmap Progress</span>
-            <Clock className="w-4 h-4 text-indigo-600" />
-          </div>
-          <div className="mt-2 flex items-baseline space-x-2">
-            <span className="text-3xl font-extrabold text-slate-900">
-              {completed_steps_count} / {total_steps_count}
-            </span>
-            <span className="text-xs text-slate-500">Steps Done</span>
-          </div>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-            <div 
-              className="bg-indigo-600 h-full rounded-full" 
-              style={{ width: `${(completed_steps_count / maxVal(total_steps_count, 1)) * 100}%` }}
-            ></div>
-          </div>
-        </Card>
       </div>
 
-      {/* Next Best Action Widget */}
-      {next_best_action && (
-        <div className="p-6 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">
-                ⭐ Next Best Action
-              </span>
-              <h3 className="text-lg font-bold text-slate-900">
-                {next_best_action.title || 'Start Your Priority Roadmap Step'}
-              </h3>
-              <p className="text-sm text-slate-600 max-w-2xl leading-relaxed">
-                {next_best_action.reason}
-              </p>
-              <div className="flex items-center space-x-4 text-xs text-slate-500 pt-1">
-                <span>Estimated effort: <strong>{next_best_action.estimated_effort}</strong></span>
-                {next_best_action.skill_name && (
-                  <>
-                    <span>•</span>
-                    <span>Skill: <strong>{next_best_action.skill_name}</strong></span>
-                  </>
-                )}
+
+
+      {/* High Priority Skill Gaps */}
+      <Card title="High Priority Skill Gaps" subtitle="Skills immediately required for target role">
+        <div className="space-y-3">
+          {high_priority_gaps.length > 0 ? (
+            high_priority_gaps.map((skill) => (
+              <div key={skill.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-800">{skill.skill_name}</h4>
+                  <p className="text-xs text-slate-500 line-clamp-1">{skill.why_it_matters}</p>
+                </div>
+                <PriorityBadge priority={skill.priority} />
               </div>
-            </div>
-            <Link
-              to="/roadmap"
-              className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-sm transition shrink-0 flex items-center justify-center space-x-2"
-            >
-              <span>Continue Roadmap</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+            ))
+          ) : (
+            <p className="text-xs text-slate-400">All core priority skills matched or completed!</p>
+          )}
         </div>
-      )}
-
-      {/* Two Column Grid: Priority Gaps & Next Stages */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="High Priority Skill Gaps" subtitle="Skills immediately required for target role">
-          <div className="space-y-3">
-            {high_priority_gaps.length > 0 ? (
-              high_priority_gaps.map((skill) => (
-                <div key={skill.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-800">{skill.skill_name}</h4>
-                    <p className="text-xs text-slate-500 line-clamp-1">{skill.why_it_matters}</p>
-                  </div>
-                  <PriorityBadge priority={skill.priority} />
-                </div>
-              ))
-            ) : (
-              <p className="text-xs text-slate-400">All core priority skills matched or completed!</p>
-            )}
-          </div>
-        </Card>
-
-        <Card title="Active Learning Milestones" subtitle="Recent roadmap progress">
-          <div className="space-y-3">
-            {recent_roadmap_steps.length > 0 ? (
-              recent_roadmap_steps.map((step) => (
-                <div key={step.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100 text-xs">
-                  <div className="space-y-0.5">
-                    <span className="font-semibold text-slate-800 line-clamp-1">{step.title}</span>
-                    <span className="text-slate-400">{step.duration}</span>
-                  </div>
-                  <StatusBadge status={step.status} />
-                </div>
-              ))
-            ) : (
-              <p className="text-xs text-slate-400">Visit the Roadmap page to start your sequence.</p>
-            )}
-          </div>
-        </Card>
-      </div>
+      </Card>
     </div>
   );
 };
 
-function maxVal(a, b) {
-  return a > b ? a : b;
-}

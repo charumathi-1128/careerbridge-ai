@@ -598,6 +598,8 @@ def analyze_skill_gaps(
     requirements = get_role_requirements(target_role, job_description)
     current_skills_normalized = [s.lower() for s in current_skills]
     
+    from app.services.roadmap_service import get_skill_curriculum
+
     gaps = []
     for req in requirements:
         req_name = req["name"]
@@ -621,12 +623,20 @@ def analyze_skill_gaps(
         else:
             match_status = "MISSING"
 
+        curriculum = get_skill_curriculum(req_name, target_role)
+
         gaps.append({
             "skill_name": req_name,
             "match_status": match_status,
             "priority": req["priority"],
             "why_it_matters": req["why"],
-            "prerequisites": req["prereqs"]
+            "prerequisites": req["prereqs"],
+            "learning_topics": curriculum.get("learning_topics", []),
+            "certifications": curriculum.get("certifications", []),
+            "practice_platforms": curriculum.get("practice_platforms", []),
+            "practice_guide": curriculum.get("practice_guide", curriculum.get("practice")),
+            "skill_outcomes": curriculum.get("skill_outcomes", []),
+            "recommended_projects": curriculum.get("recommended_projects", [])
         })
 
     return gaps
