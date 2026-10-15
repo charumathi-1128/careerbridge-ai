@@ -3,7 +3,7 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 
 class SkillGapResponse(BaseModel):
-    id: int
+    id: Optional[int] = None
     skill_name: str
     match_status: str
     priority: str
@@ -57,3 +57,5 @@ class DashboardSummary(BaseModel):
     next_best_action: Dict[str, Any]
     high_priority_gaps: List[SkillGapResponse]
     recent_roadmap_steps: List[RoadmapStepResponse]
+    has_resume: Optional[bool] = False
+

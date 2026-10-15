@@ -18,6 +18,37 @@ ROLE_SALARY_BENCHMARKS = {
     "devops engineer": {"salary_range": "$95,000 - $150,000", "demand_level": "Very High (93%)", "hiring_season": "Year-round"}
 }
 
+def _get_gap_value(gap: Any, key: str, default: Any = "") -> Any:
+    if isinstance(gap, dict):
+        return gap.get(key, default)
+    return getattr(gap, key, default)
+
+def calculate_resume_category_readiness(
+    ats_data: Dict[str, Any],
+    skill_gaps: List[Any],
+    has_certifications: bool
+) -> Dict[str, Any]:
+    strong_matches = sum(1 for gap in skill_gaps if _get_gap_value(gap, "match_status") == "STRONG_MATCH")
+    partial_matches = sum(1 for gap in skill_gaps if _get_gap_value(gap, "match_status") == "PARTIAL_MATCH")
+    technical_percentage = round(
+        ((strong_matches + partial_matches * 0.5) / max(len(skill_gaps), 1)) * 100
+    )
+    project_percentage = 100 if ats_data.get("sections_detected", {}).get("projects") else 0
+    certification_percentage = 100 if has_certifications else 0
+    resume_percentage = ats_data.get("overall_score", 0)
+
+    breakdown = [
+        {"category": "Technical Skills", "percentage": technical_percentage},
+        {"category": "Projects", "percentage": project_percentage},
+        {"category": "Certifications", "percentage": certification_percentage},
+        {"category": "Resume", "percentage": resume_percentage},
+    ]
+    average_percentage = sum(item["percentage"] for item in breakdown) / len(breakdown)
+    return {
+        "overall_percentage": int(average_percentage + 0.5),
+        "breakdown": breakdown,
+    }
+
 def calculate_career_readiness(
     ats_score: int,
     total_steps: int,
@@ -31,8 +62,8 @@ def calculate_career_readiness(
     and market benchmark metrics.
     """
     # 1. Technical Skills Match (35% weight)
-    matched_skills_count = sum(1 for g in skill_gaps if getattr(g, "match_status", g.get("match_status", "")) == "STRONG_MATCH")
-    partial_skills_count = sum(1 for g in skill_gaps if getattr(g, "match_status", g.get("match_status", "")) == "PARTIAL_MATCH")
+    matched_skills_count = sum(1 for g in skill_gaps if _get_gap_value(g, "match_status") == "STRONG_MATCH")
+    partial_skills_count = sum(1 for g in skill_gaps if _get_gap_value(g, "match_status") == "PARTIAL_MATCH")
     total_skills = max(len(skill_gaps), 1)
 
     skill_credits = matched_skills_count + (partial_skills_count * 0.5) + (completed_steps * 0.4)
@@ -120,8 +151,8 @@ def calculate_career_readiness(
     # Strengths list
     strengths = []
     for g in skill_gaps:
-        status = getattr(g, "match_status", g.get("match_status", ""))
-        name = getattr(g, "skill_name", g.get("skill_name", ""))
+        status = _get_gap_value(g, "match_status")
+        name = _get_gap_value(g, "skill_name")
         if status == "STRONG_MATCH":
             strengths.append(f"Strong verified background in {name}")
     if ats_score >= 70:
@@ -138,10 +169,10 @@ def calculate_career_readiness(
     # Priority blocker gaps
     blockers = []
     for g in skill_gaps:
-        status = getattr(g, "match_status", g.get("match_status", ""))
-        prio = getattr(g, "priority", g.get("priority", ""))
-        name = getattr(g, "skill_name", g.get("skill_name", ""))
-        why = getattr(g, "why_it_matters", g.get("why_it_matters", ""))
+        status = _get_gap_value(g, "match_status")
+        prio = _get_gap_value(g, "priority")
+        name = _get_gap_value(g, "skill_name")
+        why = _get_gap_value(g, "why_it_matters")
         if status == "MISSING" and prio == "HIGH":
             blockers.append({"skill_name": name, "priority": "High", "impact": why})
         elif status == "PARTIAL_MATCH" and prio == "HIGH":

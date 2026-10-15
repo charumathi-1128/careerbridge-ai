@@ -14,21 +14,61 @@ import {
 export const DashboardPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchDashboard = async () => {
+      setError(null);
+      try {
+        const [resumeResult, atsResult, targetResult, gapsResult] = await Promise.allSettled([
+          api.get('/resume/current'),
+          api.get('/career/ats-analysis'),
+          api.get('/career/target'),
+          api.get('/roadmap/gaps')
+        ]);
+
+        if (resumeResult.status === 'rejected') throw resumeResult.reason;
+
+        const resume = resumeResult.value.data;
+        if (!resume) {
+          setData({
+            has_resume: false,
+            target_role: targetResult.status === 'fulfilled'
+              ? targetResult.value.data?.role_title || 'Software Developer'
+              : 'Software Developer'
+          });
+          return;
+        }
+
+        const failedResult = [atsResult, targetResult, gapsResult]
+          .find((result) => result.status === 'rejected');
+        if (failedResult) throw failedResult.reason;
+
+        const readinessResult = await api.get('/dashboard/readiness');
+        const missingGaps = (gapsResult.value.data || []).filter(
+          (gap) => gap.match_status === 'MISSING' || gap.match_status === 'PARTIAL_MATCH'
+        );
+        const highPriorityGaps = missingGaps.filter((gap) => gap.priority === 'HIGH');
+
+        setData({
+          has_resume: true,
+          target_role: targetResult.value.data?.role_title || 'Software Developer',
+          ats_score: atsResult.value.data?.overall_score ?? null,
+          readiness_percentage: readinessResult.data?.overall_percentage ?? null,
+          missing_skills_count: missingGaps.length,
+          high_priority_count: highPriorityGaps.length,
+          high_priority_gaps: missingGaps
+        });
+      } catch (err) {
+        console.error('Failed to load dashboard summary', err);
+        setError('Unable to load dashboard analysis. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchDashboard();
   }, []);
-
-  const fetchDashboard = async () => {
-    try {
-      const res = await api.get('/dashboard/summary');
-      setData(res.data);
-    } catch (err) {
-      console.error('Failed to load dashboard summary', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -39,12 +79,17 @@ export const DashboardPage = () => {
     );
   }
 
+  if (error) {
+    return <div className="text-center py-20 text-sm text-red-600">{error}</div>;
+  }
+
   const {
     target_role = 'Software Developer',
-    ats_score = 74,
-    readiness_percentage = 58,
-    missing_skills_count = 3,
-    high_priority_count = 2,
+    has_resume = false,
+    ats_score,
+    readiness_percentage,
+    missing_skills_count,
+    high_priority_count,
     high_priority_gaps = []
   } = data || {};
 
@@ -90,11 +135,11 @@ export const DashboardPage = () => {
             <TrendingUp className="w-4 h-4 text-indigo-600" />
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
-            <span className="text-3xl font-extrabold text-slate-900">{readiness_percentage}%</span>
+            <span className="text-3xl font-extrabold text-slate-900">{has_resume && readiness_percentage != null ? `${readiness_percentage}%` : '--'}</span>
             <span className="text-xs text-slate-500">Progress Score</span>
           </div>
           <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-            <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${readiness_percentage}%` }}></div>
+            <div className="bg-indigo-600 h-full rounded-full" style={{ width: `${has_resume ? readiness_percentage || 0 : 0}%` }}></div>
           </div>
         </Card>
 
@@ -104,11 +149,13 @@ export const DashboardPage = () => {
             <FileText className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
-            <span className="text-3xl font-extrabold text-slate-900">{ats_score}%</span>
-            <span className="text-xs text-slate-500">Keyword Alignment</span>
+            <span className={has_resume ? 'text-3xl font-extrabold text-slate-900' : 'text-sm font-semibold text-slate-500'}>
+              {has_resume && ats_score != null ? `${ats_score}%` : 'Upload your resume to see your score'}
+            </span>
+            {has_resume && <span className="text-xs text-slate-500">Keyword Alignment</span>}
           </div>
           <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-            <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${ats_score}%` }}></div>
+            <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${has_resume ? ats_score || 0 : 0}%` }}></div>
           </div>
         </Card>
 
@@ -118,11 +165,13 @@ export const DashboardPage = () => {
             <AlertCircle className="w-4 h-4 text-amber-500" />
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
-            <span className="text-3xl font-extrabold text-slate-900">{missing_skills_count}</span>
-            <span className="text-xs text-slate-500">{high_priority_count} High Priority</span>
+            <span className="text-3xl font-extrabold text-slate-900">{has_resume ? missing_skills_count : '--'}</span>
+            <span className="text-xs text-slate-500">{has_resume ? `${high_priority_count} High Priority` : 'High Priority'}</span>
           </div>
           <p className="text-xs text-slate-400 mt-3 truncate">
-            {high_priority_gaps.map(g => g.skill_name).join(', ') || 'Ready for evaluation'}
+            {has_resume
+              ? high_priority_gaps.map(g => g.skill_name).join(', ') || 'Ready for evaluation'
+              : 'Upload your resume to see your score'}
           </p>
         </Card>
 
@@ -133,7 +182,7 @@ export const DashboardPage = () => {
       {/* High Priority Skill Gaps */}
       <Card title="High Priority Skill Gaps" subtitle="Skills immediately required for target role">
         <div className="space-y-3">
-          {high_priority_gaps.length > 0 ? (
+          {has_resume && high_priority_gaps.length > 0 ? (
             high_priority_gaps.map((skill) => (
               <div key={skill.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
                 <div>
@@ -143,8 +192,10 @@ export const DashboardPage = () => {
                 <PriorityBadge priority={skill.priority} />
               </div>
             ))
-          ) : (
+          ) : has_resume ? (
             <p className="text-xs text-slate-400">All core priority skills matched or completed!</p>
+          ) : (
+            <p className="text-xs text-slate-400">Upload your resume to see your score</p>
           )}
         </div>
       </Card>

@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from typing import List, Dict, Any
 from app.database.database import get_db
 from app.models.resume import Resume
+from app.models.user import User
+from app.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/career", tags=["career"])
 
@@ -40,8 +42,8 @@ CAREER_ARCHETYPES = [
 ]
 
 @router.get("/options")
-def get_career_options(db: Session = Depends(get_db)):
-    resume = db.query(Resume).filter(Resume.user_id == 1).order_by(Resume.uploaded_at.desc()).first()
+def get_career_options(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    resume = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.uploaded_at.desc()).first()
     student_skills = resume.parsed_data.get("skills", []) if resume and resume.parsed_data else []
     student_skills_lower = [s.lower() for s in student_skills]
 

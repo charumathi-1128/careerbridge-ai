@@ -18,6 +18,14 @@ import { CareerReadinessPage } from './pages/CareerReadinessPage';
 import { CareerOptionsPage } from './pages/CareerOptionsPage';
 import { CareerComparePage } from './pages/CareerComparePage';
 import { ResumeImprovementPage } from './pages/ResumeImprovementPage';
+import { useAuth } from './context/AuthContext';
+
+const ProtectedLayout = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  return user ? <MainLayout /> : <Navigate to="/login" replace />;
+};
 
 function App() {
   return (
@@ -34,7 +42,7 @@ function App() {
           </Route>
 
           {/* Student Dashboard & Workflows */}
-          <Route element={<MainLayout />}>
+          <Route element={<ProtectedLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/resume/upload" element={<ResumeUploadPage />} />
             <Route path="/resume/analysis" element={<ResumeAnalysisPage />} />

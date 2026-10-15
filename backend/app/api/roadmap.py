@@ -6,6 +6,8 @@ from app.database.database import get_db
 from app.models.roadmap import SkillGap, RoadmapStep
 from app.models.resume import Resume
 from app.models.career import CareerTarget
+from app.models.user import User
+from app.api.dependencies import get_current_user
 from app.schemas.roadmap import SkillGapResponse, RoadmapStepResponse, StepStatusUpdate
 from app.services.skill_gap_service import analyze_skill_gaps
 from app.services.roadmap_service import generate_roadmap_for_gaps
@@ -13,13 +15,13 @@ from app.services.roadmap_service import generate_roadmap_for_gaps
 router = APIRouter(prefix="/roadmap", tags=["roadmap"])
 
 @router.get("/gaps", response_model=List[SkillGapResponse])
-def get_skill_gaps(db: Session = Depends(get_db)):
+def get_skill_gaps(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # 1. Fetch latest resume
-    resume = db.query(Resume).filter(Resume.user_id == 1).order_by(Resume.uploaded_at.desc()).first()
+    resume = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.uploaded_at.desc()).first()
     current_skills = resume.parsed_data.get("skills", []) if resume and resume.parsed_data else []
 
     # 2. Fetch active career target
-    target = db.query(CareerTarget).filter(CareerTarget.user_id == 1, CareerTarget.is_active == True).first()
+    target = db.query(CareerTarget).filter(CareerTarget.user_id == current_user.id, CareerTarget.is_active == True).first()
     target_role = target.role_title if target else "Software Developer"
     job_desc = target.job_description if target else None
 
@@ -27,11 +29,11 @@ def get_skill_gaps(db: Session = Depends(get_db)):
     gaps_data = analyze_skill_gaps(current_skills, target_role, job_desc)
 
     # 4. Sync with DB
-    db.query(SkillGap).filter(SkillGap.user_id == 1).delete()
+    db.query(SkillGap).filter(SkillGap.user_id == current_user.id).delete()
     db_gaps = []
     for g in gaps_data:
         gap_obj = SkillGap(
-            user_id=1,
+            user_id=current_user.id,
             career_target_id=target.id if target else None,
             skill_name=g["skill_name"],
             match_status=g["match_status"],
@@ -55,18 +57,18 @@ def get_skill_gaps(db: Session = Depends(get_db)):
     return db_gaps
 
 @router.get("/steps", response_model=List[RoadmapStepResponse])
-def get_roadmap_steps(db: Session = Depends(get_db)):
+def get_roadmap_steps(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Check if steps already generated in DB with recommended_projects and practice_platforms
-    existing_steps = db.query(RoadmapStep).filter(RoadmapStep.user_id == 1).order_by(RoadmapStep.step_number).all()
+    existing_steps = db.query(RoadmapStep).filter(RoadmapStep.user_id == current_user.id).order_by(RoadmapStep.step_number).all()
     if existing_steps and existing_steps[0].recommended_projects and existing_steps[0].practice_platforms:
         return existing_steps
 
     # Otherwise clear old format steps and generate fresh steps
-    db.query(RoadmapStep).filter(RoadmapStep.user_id == 1).delete()
+    db.query(RoadmapStep).filter(RoadmapStep.user_id == current_user.id).delete()
 
-    resume = db.query(Resume).filter(Resume.user_id == 1).order_by(Resume.uploaded_at.desc()).first()
+    resume = db.query(Resume).filter(Resume.user_id == current_user.id).order_by(Resume.uploaded_at.desc()).first()
     current_skills = resume.parsed_data.get("skills", []) if resume and resume.parsed_data else []
-    target = db.query(CareerTarget).filter(CareerTarget.user_id == 1, CareerTarget.is_active == True).first()
+    target = db.query(CareerTarget).filter(CareerTarget.user_id == current_user.id, CareerTarget.is_active == True).first()
     target_role = target.role_title if target else "Software Developer"
     job_desc = target.job_description if target else None
 
@@ -76,7 +78,7 @@ def get_roadmap_steps(db: Session = Depends(get_db)):
     db_steps = []
     for s in steps_data:
         step_obj = RoadmapStep(
-            user_id=1,
+            user_id=current_user.id,
             step_number=s["step_number"],
             title=s["title"],
             skill_name=s["skill_name"],
@@ -108,9 +110,10 @@ def get_roadmap_steps(db: Session = Depends(get_db)):
 def update_step_status(
     step_id: int,
     payload: StepStatusUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    step = db.query(RoadmapStep).filter(RoadmapStep.id == step_id, RoadmapStep.user_id == 1).first()
+    step = db.query(RoadmapStep).filter(RoadmapStep.id == step_id, RoadmapStep.user_id == current_user.id).first()
     if not step:
         raise HTTPException(status_code=404, detail="Roadmap step not found")
 
@@ -125,14 +128,14 @@ def update_step_status(
     return step
 
 @router.get("/skill/{skill_name}", response_model=Optional[RoadmapStepResponse])
-def get_skill_detail(skill_name: str, db: Session = Depends(get_db)):
+def get_skill_detail(skill_name: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     step = db.query(RoadmapStep).filter(
-        RoadmapStep.user_id == 1,
+        RoadmapStep.user_id == current_user.id,
         RoadmapStep.skill_name.ilike(f"%{skill_name}%")
     ).first()
     if not step:
         # Fallback to generating template details
-        target = db.query(CareerTarget).filter(CareerTarget.user_id == 1, CareerTarget.is_active == True).first()
+        target = db.query(CareerTarget).filter(CareerTarget.user_id == current_user.id, CareerTarget.is_active == True).first()
         target_role = target.role_title if target else "Software Developer"
         job_desc = target.job_description if target else None
         
@@ -142,7 +145,7 @@ def get_skill_detail(skill_name: str, db: Session = Depends(get_db)):
             if skill_name.lower() in s["skill_name"].lower():
                 return RoadmapStep(
                     id=999,
-                    user_id=1,
+                    user_id=current_user.id,
                     step_number=s["step_number"],
                     title=s["title"],
                     skill_name=s["skill_name"],

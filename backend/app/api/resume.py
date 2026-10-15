@@ -4,25 +4,21 @@ from typing import Optional
 from app.database.database import get_db
 from app.models.resume import Resume
 from app.models.user import User
+from app.api.dependencies import get_current_user
 from app.schemas.resume import ResumeResponse
 from app.services.resume_parser import (
     extract_text_from_pdf,
     extract_text_from_docx,
     parse_resume_text
 )
-from app.utils.security import decode_access_token
 
 router = APIRouter(prefix="/resume", tags=["resume"])
-
-# Helper dependency to retrieve current user from Bearer token
-def get_current_user(token_header: str = Depends(lambda: None), db: Session = Depends(get_db)):
-    # Simple bearer token extraction (or default user fallback for demo flexibility)
-    return 1  # default demo student ID if token is omitted
 
 @router.post("/upload", response_model=ResumeResponse)
 async def upload_resume(
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     # Validate extension
     file_ext = file.filename.split(".")[-1].lower()
@@ -63,7 +59,7 @@ async def upload_resume(
 
     # Store in database
     new_resume = Resume(
-        user_id=1,  # Tied to active student
+        user_id=current_user.id,
         file_name=file.filename,
         file_type=file_ext,
         raw_text=raw_text,
@@ -76,9 +72,10 @@ async def upload_resume(
     return new_resume
 
 @router.get("/current", response_model=Optional[ResumeResponse])
-def get_current_resume(db: Session = Depends(get_db)):
+def get_current_resume(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     latest_resume = (
         db.query(Resume)
+        .filter(Resume.user_id == current_user.id)
         .order_by(Resume.uploaded_at.desc())
         .first()
     )
