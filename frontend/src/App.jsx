@@ -13,7 +13,6 @@ import { ResumeUploadPage } from './pages/ResumeUploadPage';
 import { ResumeAnalysisPage } from './pages/ResumeAnalysisPage';
 import { CareerTargetPage } from './pages/CareerTargetPage';
 import { SkillGapPage } from './pages/SkillGapPage';
-
 import { SkillDetailPage } from './pages/SkillDetailPage';
 import { CareerReadinessPage } from './pages/CareerReadinessPage';
 import { CareerOptionsPage } from './pages/CareerOptionsPage';

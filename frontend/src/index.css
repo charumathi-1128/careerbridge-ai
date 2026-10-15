@@ -1,23 +1,65 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
-  --color-priority-high: #ef4444;
-  --color-priority-medium: #f59e0b;
-  --color-priority-low: #10b981;
+  --color-white: #F5F4EF;
+  --color-slate-50: #D9D8CC;
+  --color-slate-100: #ECEBE4;
+  --color-slate-200: #C8C8BA;
+  --color-slate-300: #B8B8A6;
+  --color-slate-400: #7E8C81;
+  --color-slate-500: #617066;
+  --color-slate-600: #536158;
+  --color-slate-700: #40594C;
+  --color-slate-800: #33473D;
+  --color-slate-900: #25352C;
+
+  --color-indigo-50: #A5B392;
+  --color-indigo-100: #D8E0D0;
+  --color-indigo-200: #BDCBB3;
+  --color-indigo-300: #A5B392;
+  --color-indigo-400: #839773;
+  --color-indigo-500: #536E5E;
+  --color-indigo-600: #40594C;
+  --color-indigo-700: #33473D;
+  --color-indigo-800: #283830;
+  --color-indigo-900: #1E2B24;
+  --color-indigo-950: #141C18;
+
+  --color-brand-50: #A5B392;
+  --color-brand-100: #D8E0D0;
+  --color-brand-500: #536E5E;
+  --color-brand-600: #40594C;
+  --color-brand-700: #33473D;
+  --color-brand-800: #283830;
+  --color-brand-900: #1E2B24;
+
+  --color-priority-high: #9E4747;
+  --color-priority-medium: #8A7246;
+  --color-priority-low: #4A6E59;
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #D9D8CC;
+  color: #536158;
   min-height: 100vh;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Form inputs & controls contrast */
+input, select, textarea {
+  background-color: #F5F4EF !important;
+  border-color: #C8C8BA !important;
+  color: #25352C !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #40594C !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(64, 89, 76, 0.25) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #7E8C81 !important;
 }
 
 /* Custom scrollbars */
@@ -26,12 +68,13 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #D9D8CC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #C8C8BA;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #A5B392;
 }
+

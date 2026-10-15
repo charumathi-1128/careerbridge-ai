@@ -18,10 +18,10 @@ export const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-2">
-              <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold shadow-sm shadow-indigo-200">
-                <Sparkles className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold shadow-xs">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-700 to-indigo-500 bg-clip-text text-transparent">
+              <span className="text-xl font-bold text-slate-800">
                 CareerBridge AI
               </span>
             </Link>

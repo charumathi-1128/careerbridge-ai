@@ -75,7 +75,7 @@ export const SkillDetailPage = () => {
 
   const topics = skill.learning_topics && skill.learning_topics.length > 0
     ? skill.learning_topics
-    : skill.learning_sequence || [];
+    : [];
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -97,7 +97,7 @@ export const SkillDetailPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Learning Topics */}
-        <Card title="Learning Topics & Curriculum" subtitle="Recommended sequence of study">
+        <Card title="Learning Topics & Curriculum" subtitle="Key conceptual areas and topics">
           <ul className="space-y-2.5 text-sm text-slate-700">
             {topics.map((step, idx) => (
               <li key={idx} className="flex items-start space-x-2.5">

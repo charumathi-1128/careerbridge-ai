@@ -7,7 +7,6 @@ import {
   Target,
   GitCompare,
   Compass,
-  FileCheck2,
   CheckCircle2,
 } from 'lucide-react';
 
@@ -17,7 +16,6 @@ const navigationItems = [
   { name: 'Resume Analysis', path: '/resume/analysis', icon: ScanText },
   { name: 'Target Career', path: '/career/target', icon: Target },
   { name: 'Skill Gap Analysis', path: '/skills/gaps', icon: GitCompare },
-
   { name: 'Career Readiness', path: '/career-readiness', icon: CheckCircle2 },
   { name: 'Career Options', path: '/career/options', icon: Compass },
 ];
@@ -39,7 +37,7 @@ export const Sidebar = () => {
                 className={({ isActive }) =>
                   `flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
                     isActive
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-xs'
+                      ? 'bg-[#A5B392] text-[#40594C] font-semibold shadow-xs'
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`
                 }
@@ -52,8 +50,8 @@ export const Sidebar = () => {
         </nav>
       </div>
 
-      <div className="p-3 bg-indigo-50/60 rounded-xl border border-indigo-100 text-xs text-indigo-900">
-        <p className="font-semibold text-indigo-950 mb-1">CareerBridge AI v1.0</p>
+      <div className="p-3 bg-[#A5B392]/20 rounded-xl border border-[#C8C8BA] text-xs text-slate-800">
+        <p className="font-semibold text-slate-900 mb-1">CareerBridge AI v1.0</p>
         <p className="text-slate-600 leading-relaxed">
           Intelligent career readiness and personalized job preparation engine.
         </p>

@@ -75,7 +75,7 @@ export const CareerTargetPage = () => {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Define Your Career Goal</h1>
         <p className="text-sm text-slate-500 mt-1">
-          Specify your desired target role and target company to generate your personalized skill gap analysis and learning roadmap.
+          Specify your desired target role and target company to generate your personalized skill gap analysis.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ export const CareerTargetPage = () => {
       {success && (
         <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center space-x-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>Career target saved! Generating personalized skill gaps and roadmap...</span>
+          <span>Career target saved! Generating personalized skill gaps...</span>
         </div>
       )}
 

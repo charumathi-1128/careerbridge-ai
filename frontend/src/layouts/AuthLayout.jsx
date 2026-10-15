@@ -7,15 +7,15 @@ export const AuthLayout = () => {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link to="/" className="inline-flex items-center space-x-2">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200">
-            <Sparkles className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-xs">
+            <Sparkles className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-bold bg-gradient-to-r from-indigo-700 to-indigo-500 bg-clip-text text-transparent">
+          <span className="text-2xl font-bold text-slate-800">
             CareerBridge AI
           </span>
         </Link>
         <p className="mt-2 text-sm text-slate-500">
-          Smart, actionable career readiness, skill gap analysis & learning roadmaps
+          Smart, actionable career readiness & skill gap analysis
         </p>
       </div>
 

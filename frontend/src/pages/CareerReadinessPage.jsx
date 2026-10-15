@@ -74,31 +74,31 @@ export const CareerReadinessPage = () => {
     {
       name: 'Technical Skills',
       percentage: data?.breakdown?.find((b) => b.category.toLowerCase().includes('skill'))?.percentage ?? 70,
-      color: 'bg-indigo-600',
+      color: 'bg-[#40594C]',
       icon: Code2
     },
     {
       name: 'Projects',
       percentage: data?.breakdown?.find((b) => b.category.toLowerCase().includes('project'))?.percentage ?? 65,
-      color: 'bg-violet-600',
+      color: 'bg-[#536E5E]',
       icon: FolderGit2
     },
     {
       name: 'Certifications',
       percentage: data?.breakdown?.find((b) => b.category.toLowerCase().includes('cert'))?.percentage ?? 50,
-      color: 'bg-emerald-500',
+      color: 'bg-[#6D8269]',
       icon: Award
     },
     {
       name: 'Resume',
       percentage: data?.breakdown?.find((b) => b.category.toLowerCase().includes('resume'))?.percentage ?? 80,
-      color: 'bg-sky-500',
+      color: 'bg-[#8A9C7D]',
       icon: FileText
     },
     {
       name: 'Interview Preparation',
       percentage: data?.breakdown?.find((b) => b.category.toLowerCase().includes('practice') || b.category.toLowerCase().includes('interview') || b.category.toLowerCase().includes('coding'))?.percentage ?? 45,
-      color: 'bg-amber-500',
+      color: 'bg-[#A5B392]',
       icon: HelpCircle
     }
   ];
@@ -131,15 +131,15 @@ export const CareerReadinessPage = () => {
       </div>
 
       {/* Main Score Banner */}
-      <div className="p-6 rounded-2xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+      <div className="p-6 rounded-2xl bg-[#40594C] text-[#F5F4EF] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="space-y-1">
-          <span className="text-[11px] font-bold tracking-wider uppercase text-indigo-300">
+          <span className="text-[11px] font-bold tracking-wider uppercase text-[#A5B392]">
             OVERALL EVALUATION
           </span>
-          <h2 className="text-xl sm:text-2xl font-black text-white">
+          <h2 className="text-xl sm:text-2xl font-black text-[#F5F4EF]">
             CAREER READINESS SCORE: {overallScore}%
           </h2>
-          <p className="text-xs text-indigo-200 max-w-md">
+          <p className="text-xs text-[#D9D8CC] max-w-md">
             {overallScore >= 80
               ? 'Your profile is strong and well-positioned for placement and internship interviews.'
               : overallScore >= 60
@@ -148,12 +148,12 @@ export const CareerReadinessPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-4 shrink-0 bg-white/10 px-5 py-3 rounded-xl border border-white/10">
+        <div className="flex items-center space-x-4 shrink-0 bg-white/10 px-5 py-3 rounded-xl border border-white/15">
           <div className="text-center">
-            <div className="text-3xl font-black text-emerald-400 leading-none">
+            <div className="text-3xl font-black text-[#A5B392] leading-none">
               {overallScore}%
             </div>
-            <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider">
+            <span className="text-[10px] font-bold text-[#D9D8CC] uppercase tracking-wider">
               READY
             </span>
           </div>

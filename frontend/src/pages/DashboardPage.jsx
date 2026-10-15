@@ -51,29 +51,29 @@ export const DashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Top Welcome Banner */}
-      <div className="bg-gradient-to-r from-indigo-900 to-indigo-700 text-white rounded-2xl p-6 md:p-8 shadow-sm">
+      <div className="bg-[#40594C] text-[#F5F4EF] rounded-2xl p-6 md:p-8 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-800/80 text-indigo-200 text-xs font-semibold mb-3 border border-indigo-600/50">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#A5B392]/30 text-[#F5F4EF] text-xs font-semibold mb-3 border border-[#A5B392]/40">
+              <Sparkles className="w-3.5 h-3.5 text-[#A5B392]" />
               <span>Placement Preparation Hub</span>
             </span>
-            <h1 className="text-2xl md:text-3xl font-bold">Welcome to CareerBridge AI</h1>
-            <p className="text-indigo-200 text-sm mt-1 max-w-xl">
+            <h1 className="text-2xl md:text-3xl font-bold text-[#F5F4EF]">Welcome to CareerBridge AI</h1>
+            <p className="text-[#D9D8CC] text-sm mt-1 max-w-xl">
               Current Target Role: <strong className="text-white">{target_role}</strong>
             </p>
           </div>
           <div className="flex items-center space-x-3">
             <Link
               to="/resume/upload"
-              className="px-4 py-2.5 bg-white text-indigo-900 font-semibold rounded-lg text-sm hover:bg-indigo-50 transition shadow-xs flex items-center space-x-2"
+              className="px-4 py-2.5 bg-[#F5F4EF] text-[#40594C] font-semibold rounded-lg text-sm hover:bg-white transition shadow-xs flex items-center space-x-2"
             >
               <FileText className="w-4 h-4" />
               <span>Update Resume</span>
             </Link>
             <Link
               to="/career/target"
-              className="px-4 py-2.5 bg-indigo-800 text-white font-semibold rounded-lg text-sm hover:bg-indigo-700 transition border border-indigo-600 flex items-center space-x-2"
+              className="px-4 py-2.5 bg-[#A5B392] text-[#40594C] font-semibold rounded-lg text-sm hover:bg-[#94A480] transition flex items-center space-x-2"
             >
               <Target className="w-4 h-4" />
               <span>Change Target</span>

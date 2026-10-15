@@ -7,7 +7,7 @@ import {
   CheckCircle, 
   FileText, 
   Target, 
-  Milestone, 
+  FolderGit2, 
   Compass, 
   TrendingUp 
 } from 'lucide-react';
@@ -19,14 +19,14 @@ export const LandingPage = () => {
 
       {/* Hero Section */}
       <section className="py-16 md:py-24 px-4 max-w-6xl mx-auto text-center">
-        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold mb-6">
-          <Sparkles className="w-4 h-4" />
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#A5B392]/30 border border-[#A5B392] text-[#40594C] text-xs font-semibold mb-6">
+          <Sparkles className="w-4 h-4 text-[#40594C]" />
           <span>AI-Powered Career Readiness & Job Preparation Platform</span>
         </div>
 
         <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
           Bridge the Gap Between <br className="hidden md:inline" />
-          <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          <span className="text-[#40594C]">
             Your Current Resume
           </span>{' '}
           and Target Dream Job
@@ -34,20 +34,20 @@ export const LandingPage = () => {
 
         <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
           Whether you're a job seeker targeting top companies, a professional switching domains, or a student preparing for placements —
-          CareerBridge AI gives you a clear, personalized skill gap analysis, ATS score, and actionable learning roadmap.
+          CareerBridge AI gives you a clear, personalized skill gap analysis and ATS score.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             to="/register"
-            className="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-md shadow-indigo-200 transition flex items-center justify-center space-x-2"
+            className="w-full sm:w-auto px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-xs transition flex items-center justify-center space-x-2"
           >
             <span>Start Your Career Journey</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
           <Link
             to="/login"
-            className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-50 text-slate-700 font-semibold rounded-xl border border-slate-200 shadow-xs transition"
+            className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-slate-100 text-slate-700 font-semibold rounded-xl border border-slate-200 shadow-xs transition"
           >
             Sign In
           </Link>
@@ -84,11 +84,11 @@ export const LandingPage = () => {
 
             <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
               <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
-                <Milestone className="w-6 h-6" />
+                <FolderGit2 className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 mb-2">3. Actionable Roadmaps & Projects</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">3. Recommended Projects</h3>
               <p className="text-sm text-slate-600 leading-relaxed">
-                Receive prioritized learning steps, real-world portfolio projects, and curated learning references tailored to your career goal.
+                Build real-world portfolio projects and access curated references tailored to your career goal.
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export const LandingPage = () => {
 
       {/* Footer */}
       <footer className="mt-auto py-8 text-center text-xs text-slate-500">
-        CareerBridge AI — Intelligent Career Readiness, Job Preparation & Skill Roadmaps
+        CareerBridge AI — Intelligent Career Readiness & Job Preparation
       </footer>
     </div>
   );
